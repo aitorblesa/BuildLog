@@ -1,0 +1,18 @@
+---
+interface Props {
+  ticks?: number;
+  label?: string;
+  class?: string;
+}
+const { ticks = 8, label, class: className = '' } = Astro.props;
+---
+<div class:list={['select-none', className]} aria-hidden="true">
+  <div class="flex h-2.5 items-end">
+    {Array.from({ length: ticks + 1 }).map((_, i) => (
+      <div class="flex-1 flex justify-start">
+        <div class:list={['w-px bg-muted', i % 2 === 0 ? 'h-2.5' : 'h-1.5']}></div>
+      </div>
+    ))}
+  </div>
+  {label && <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{label}</p>}
+</div>

@@ -1,0 +1,22 @@
+---
+import type { Milestone } from '../../../types';
+
+interface Props {
+  milestone: Milestone;
+}
+const { milestone } = Astro.props;
+---
+<button
+  type="button"
+  class="milestone-row flex w-full items-center justify-between py-3 text-left transition-colors duration-150"
+  data-milestone-id={milestone.id}
+  data-status={milestone.status}
+>
+  <span class="flex items-center gap-3">
+    <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{milestone.code}</span>
+    <span class="font-body text-sm text-ink">{milestone.title}</span>
+  </span>
+  <span class="milestone-status font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+    {milestone.status}
+  </span>
+</button>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  id?: string;
+  class?: string;
+}
+const { href, type = 'button', id, class: className = '' } = Astro.props;
+const Tag = href ? 'a' : 'button';
+const base =
+  'inline-flex w-full items-center justify-center gap-2 border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 ease-out active:bg-signal active:border-signal min-h-[52px]';
+---
+<Tag
+  href={href}
+  type={!href ? type : undefined}
+  id={id}
+  class:list={[base, className]}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Rule from '../components/ui/Rule.astro';
+import SpecLabel from '../components/ui/SpecLabel.astro';
+import { SKILLS, PHASES } from '../data/roadmap';
+---
+<BaseLayout title="Progress" active="progress">
+  <header class="mb-8">
+    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Frontend Career OS</p>
+    <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">PROGRESS</h1>
+    <p class="mt-1 font-mono text-xs text-muted">SKILL STATES · DAILY LOG · WEEKLY REVIEW</p>
+  </header>
+
+  <Rule />
+
+  <section class="py-6">
+    <SpecLabel>This Week</SpecLabel>
+    <div class="mt-3 grid grid-cols-3 gap-4">
+      <div>
+        <p id="review-sessions" class="font-display text-xl font-bold text-ink">00</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Sessions</p>
+      </div>
+      <div>
+        <p id="review-focus" class="font-display text-xl font-bold text-ink">00:00</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Focus</p>
+      </div>
+      <div>
+        <p id="review-completed" class="font-display text-xl font-bold text-ink">00</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Min. Days</p>
+      </div>
+    </div>
+  </section>
+
+  <Rule />
+
+  <section class="py-6">
+    <SpecLabel>Skill States</SpecLabel>
+    <p class="mt-1 font-mono text-[10px] text-muted">TAP TO CYCLE STATE</p>
+    <div class="mt-3">
+      {PHASES.map((phase) => (
+        <div class="mb-4">
+          <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{String(phase.number).padStart(2, '0')} · {phase.name}</p>
+          {SKILLS.filter((s) => s.phaseId === phase.id).map((skill) => (
+            <>
+              <button type="button" class="skill-row flex w-full items-center justify-between py-3 text-left" data-skill-id={skill.id}>
+                <span class="font-body text-sm text-ink">{skill.name}</span>
+                <span class="skill-state-label font-mono text-[10px] uppercase tracking-[0.14em] text-muted">NOT STARTED</span>
+              </button>
+              <Rule />
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-6">
+    <SpecLabel>Daily Log</SpecLabel>
+    <p id="daily-log-empty" class="mt-3 font-body text-sm text-muted">No sessions logged yet. Start today.</p>
+    <ul id="daily-log-list" class="mt-2 divide-y divide-rule"></ul>
+  </section>
+
+  <Rule />
+
+  <section class="py-6">
+    <SpecLabel>Weekly Review</SpecLabel>
+    <form id="weekly-review-form" class="mt-3 space-y-4">
+      <label class="block">
+        <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">What went well?</span>
+        <textarea name="wentWell" rows={2} class="mt-2 w-full resize-none border border-rule bg-paper px-3 py-3 font-body text-sm text-ink outline-none focus-visible:border-ink"></textarea>
+      </label>
+      <label class="block">
+        <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">What blocked you?</span>
+        <textarea name="blocked" rows={2} class="mt-2 w-full resize-none border border-rule bg-paper px-3 py-3 font-body text-sm text-ink outline-none focus-visible:border-ink"></textarea>
+      </label>
+      <label class="block">
+        <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">What should be the focus next week?</span>
+        <textarea name="nextFocus" rows={2} class="mt-2 w-full resize-none border border-rule bg-paper px-3 py-3 font-body text-sm text-ink outline-none focus-visible:border-ink"></textarea>
+      </label>
+      <button type="submit" class="w-full border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 active:bg-signal active:border-signal min-h-[52px]">
+        Save Review
+      </button>
+      <p id="review-saved-status" class="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-signal" hidden>Saved</p>
+    </form>
+  </section>
+
+  <script src="../lib/client/hydrate-progress.ts"></script>
+</BaseLayout>
