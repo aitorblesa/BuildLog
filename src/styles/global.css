@@ -33,6 +33,12 @@
     background: var(--color-paper);
   }
 
+  @media (max-width: 640px) {
+    html {
+      font-size: 18px;
+    }
+  }
+
   body {
     background: var(--color-paper);
     color: var(--color-ink);
