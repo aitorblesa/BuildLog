@@ -38,6 +38,8 @@ export interface Task {
   title: string;
   estMinutes: number;
   order: number;
+  brief: string;
+  doneWhen: string[];
 }
 
 export type MilestoneStatus = 'PENDING' | 'ACTIVE' | 'DONE';

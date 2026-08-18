@@ -4,12 +4,25 @@ import { SessionRepository } from '../../../repositories/SessionRepository';
 import { ActiveSessionRepository } from '../../../repositories/ActiveSessionRepository';
 import { ProgressRepository } from '../../../repositories/ProgressRepository';
 import { SettingsRepository } from '../../../repositories/SettingsRepository';
+import { TASKS, getSkill } from '../../../data/roadmap';
 import type { WorkSession } from '../../../types';
 
 interface Props {
   taskId: string | null;
   taskNumber: string;
   taskTitle: string;
+  taskBrief: string | null;
+  taskDoneWhen: string[];
+  skillId: string | null;
+  skillName: string;
+}
+
+interface DisplayTask {
+  taskId: string | null;
+  taskNumber: string;
+  taskTitle: string;
+  taskBrief: string | null;
+  taskDoneWhen: string[];
   skillId: string | null;
   skillName: string;
 }
@@ -36,7 +49,8 @@ function formatReceiptDate(date: Date): string {
 
 const easing = [0.4, 0, 0.2, 1] as const;
 
-export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, skillName }: Props) {
+export default function SessionTimer(props: Props) {
+  const [display, setDisplay] = useState<DisplayTask>(props);
   const [phase, setPhase] = useState<Phase>('running');
   const [session, setSession] = useState<WorkSession | null>(null);
   const [plannedSec, setPlannedSec] = useState(25 * 60);
@@ -54,6 +68,16 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
     if (pointer.sessionId && pointer.startedAt) {
       const existing = SessionRepository.all().find((s) => s.id === pointer.sessionId && s.status === 'RUNNING');
       if (existing) {
+        const existingTask = existing.taskId ? TASKS.find((t) => t.id === existing.taskId) : null;
+        setDisplay({
+          taskId: existing.taskId,
+          taskNumber: existingTask ? String(existingTask.number).padStart(3, '0') : props.taskNumber,
+          taskTitle: existing.taskTitle || props.taskTitle,
+          taskBrief: existingTask?.brief ?? null,
+          taskDoneWhen: existingTask?.doneWhen ?? [],
+          skillId: existing.skillId,
+          skillName: existing.topic || props.skillName,
+        });
         setSession(existing);
         setPlannedSec(pointer.plannedMinutes * 60);
         setStartedAtMs(pointer.startedAt);
@@ -62,12 +86,29 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
       }
     }
 
+    // Static build: the server can't see the browser's query string, so the
+    // task actually intended for this session is resolved here on the client.
+    const urlTaskId = new URLSearchParams(window.location.search).get('task');
+    const urlTask = urlTaskId ? TASKS.find((t) => t.id === urlTaskId) : null;
+    const active: DisplayTask = urlTask
+      ? {
+          taskId: urlTask.id,
+          taskNumber: String(urlTask.number).padStart(3, '0'),
+          taskTitle: urlTask.title.toUpperCase(),
+          taskBrief: urlTask.brief,
+          taskDoneWhen: urlTask.doneWhen,
+          skillId: urlTask.skillId,
+          skillName: getSkill(urlTask.skillId)?.name ?? props.skillName,
+        }
+      : props;
+    setDisplay(active);
+
     const created = SessionRepository.createSession({
       durationPlannedMin: settings.sessionMinutes,
-      taskId,
-      taskTitle,
-      skillId,
-      topic: skillName,
+      taskId: active.taskId,
+      taskTitle: active.taskTitle,
+      skillId: active.skillId,
+      topic: active.skillName,
     });
     const now = Date.now();
     setSession(created);
@@ -139,7 +180,7 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
       durationActualMin: phase === 'complete' && remainingSec <= 0 ? Math.round(plannedSec / 60) : elapsedMin,
       note,
     });
-    if (taskId) ProgressRepository.completeTask(taskId);
+    if (display.taskId) ProgressRepository.completeTask(display.taskId);
     ActiveSessionRepository.clear();
     if (completed) setSaved(completed);
     setPhase('saved');
@@ -167,7 +208,7 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
               </p>
             </div>
 
-            <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-muted">{skillName}</p>
+            <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-muted">{display.skillName}</p>
 
             <p className="mt-2 font-display text-[clamp(3.5rem,18vw,6rem)] font-bold leading-none tabular-nums tracking-tight text-ink">
               {formatClock(remainingSec)}
@@ -180,8 +221,26 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
               />
             </div>
 
-            <p className="mt-6 font-display text-lg font-bold uppercase leading-snug text-ink">{taskTitle}</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TASK {taskNumber}</p>
+            <p className="mt-6 font-display text-lg font-bold uppercase leading-snug text-ink">{display.taskTitle}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TASK {display.taskNumber}</p>
+
+            {display.taskBrief && (
+              <p className="mt-3 font-body text-sm leading-relaxed text-ink">{display.taskBrief}</p>
+            )}
+
+            {display.taskDoneWhen.length > 0 && (
+              <div className="mt-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Done when</p>
+                <ul className="mt-2 space-y-1.5">
+                  {display.taskDoneWhen.map((item, i) => (
+                    <li key={i} className="flex gap-2 font-body text-sm text-ink">
+                      <span className="text-muted">□</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="mt-8 h-px w-full bg-rule" />
             <div className="mt-4 flex justify-between">
@@ -237,7 +296,7 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
             <p className="mt-3 font-display text-4xl font-bold text-ink">
               {formatClock(Math.min(plannedSec, Math.max(0, plannedSec - remainingSec)))}
             </p>
-            <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-muted">{skillName} · TASK {taskNumber}</p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-muted">{display.skillName} · TASK {display.taskNumber}</p>
 
             <div className="mt-8 h-px w-full bg-rule" />
 
@@ -295,7 +354,7 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
               </div>
               <div className="flex justify-between">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Focus</dt>
-                <dd className="font-mono text-xs text-ink">{skillName.toUpperCase()}</dd>
+                <dd className="font-mono text-xs text-ink">{display.skillName.toUpperCase()}</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Duration</dt>
@@ -303,7 +362,7 @@ export default function SessionTimer({ taskId, taskNumber, taskTitle, skillId, s
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Task</dt>
-                <dd className="text-right font-mono text-xs text-ink">{taskTitle}</dd>
+                <dd className="text-right font-mono text-xs text-ink">{display.taskTitle}</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Status</dt>

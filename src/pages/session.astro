@@ -16,6 +16,8 @@ const skill = task ? getSkill(task.skillId) : undefined;
     taskId={task?.id ?? null}
     taskNumber={task ? String(task.number).padStart(3, '0') : '000'}
     taskTitle={task?.title.toUpperCase() ?? 'FOCUS SESSION'}
+    taskBrief={task?.brief ?? null}
+    taskDoneWhen={task?.doneWhen ?? []}
     skillId={task?.skillId ?? null}
     skillName={skill?.name ?? 'FRONTEND'}
   />
