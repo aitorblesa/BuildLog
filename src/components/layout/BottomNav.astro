@@ -5,15 +5,15 @@ interface Props {
 const { active } = Astro.props;
 
 const items = [
-  { id: 'today', label: 'TODAY', href: '/' },
-  { id: 'progress', label: 'PROGRESS', href: '/progress' },
-  { id: 'roadmap', label: 'ROADMAP', href: '/roadmap' },
-  { id: 'career', label: 'CAREER', href: '/career' },
+  { id: 'today', label: 'HOY', href: '/' },
+  { id: 'progress', label: 'PROGRESO', href: '/progress' },
+  { id: 'roadmap', label: 'RUTA', href: '/roadmap' },
+  { id: 'career', label: 'CARRERA', href: '/career' },
 ] as const;
 ---
 <nav
-  class="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper backdrop-blur-none"
-  aria-label="Primary"
+  class="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper backdrop-blur-none lg:hidden"
+  aria-label="Principal"
 >
   <ul class="mx-auto flex max-w-360">
     {items.map((item) => (
@@ -22,8 +22,8 @@ const items = [
           href={item.href}
           aria-current={active === item.id ? 'page' : undefined}
           class:list={[
-            'flex flex-col items-center justify-center gap-1 py-3 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors duration-150',
-            active === item.id ? 'text-signal' : 'text-muted',
+            'flex min-h-14 flex-col items-center justify-center gap-1 py-3 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors duration-150',
+            active === item.id ? 'text-signal-ink' : 'text-muted',
           ]}
         >
           <span

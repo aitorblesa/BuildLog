@@ -1,0 +1,32 @@
+---
+import type { Resource } from '../../../types';
+import { RESOURCE_KIND_LABELS } from '../../../types';
+
+interface Props {
+  resources?: Resource[];
+  class?: string;
+}
+const { resources = [], class: className = '' } = Astro.props;
+---
+{resources.length > 0 && (
+  <ul class:list={['space-y-1', className]}>
+    {resources.map((resource) => (
+      <li>
+        <a
+          href={resource.url}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="group inline-flex min-h-11 items-baseline gap-2 text-left sm:min-h-0 sm:py-1"
+        >
+          <span class="shrink-0 border border-rule px-1 py-px font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
+            {RESOURCE_KIND_LABELS[resource.kind]}
+          </span>
+          <span class="font-body text-sm text-ink underline decoration-rule-strong underline-offset-4 transition-colors duration-150 group-hover:decoration-ink">
+            {resource.label}
+          </span>
+          <span class="font-mono text-[10px] text-muted" aria-hidden="true">↗</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

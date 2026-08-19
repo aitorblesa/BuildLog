@@ -1,31 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { SessionRepository } from '../../../repositories/SessionRepository';
 import { ActiveSessionRepository } from '../../../repositories/ActiveSessionRepository';
 import { ProgressRepository } from '../../../repositories/ProgressRepository';
 import { SettingsRepository } from '../../../repositories/SettingsRepository';
-import { TASKS, getSkill } from '../../../data/roadmap';
-import type { WorkSession } from '../../../types';
+import { TASKS, getSkillLabel } from '../../../data/roadmap';
+import { RESOURCE_KIND_LABELS } from '../../../types';
+import type { Resource, WorkSession } from '../../../types';
 
 interface Props {
   taskId: string | null;
   taskNumber: string;
   taskTitle: string;
   taskBrief: string | null;
+  taskSteps: string[];
   taskDoneWhen: string[];
+  taskResources: Resource[];
   skillId: string | null;
   skillName: string;
 }
 
-interface DisplayTask {
-  taskId: string | null;
-  taskNumber: string;
-  taskTitle: string;
-  taskBrief: string | null;
-  taskDoneWhen: string[];
-  skillId: string | null;
-  skillName: string;
-}
+type DisplayTask = Props;
 
 type Phase = 'running' | 'paused' | 'complete' | 'saved';
 
@@ -37,12 +32,12 @@ function formatClock(totalSeconds: number): string {
 }
 
 function formatTimeOfDay(date: Date): string {
-  return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+  return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
 function formatReceiptDate(date: Date): string {
   return date
-    .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    .toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
     .toUpperCase()
     .replace(',', '');
 }
@@ -74,7 +69,9 @@ export default function SessionTimer(props: Props) {
           taskNumber: existingTask ? String(existingTask.number).padStart(3, '0') : props.taskNumber,
           taskTitle: existing.taskTitle || props.taskTitle,
           taskBrief: existingTask?.brief ?? null,
+          taskSteps: existingTask?.steps ?? [],
           taskDoneWhen: existingTask?.doneWhen ?? [],
+          taskResources: existingTask?.resources ?? [],
           skillId: existing.skillId,
           skillName: existing.topic || props.skillName,
         });
@@ -96,9 +93,11 @@ export default function SessionTimer(props: Props) {
           taskNumber: String(urlTask.number).padStart(3, '0'),
           taskTitle: urlTask.title.toUpperCase(),
           taskBrief: urlTask.brief,
+          taskSteps: urlTask.steps,
           taskDoneWhen: urlTask.doneWhen,
+          taskResources: urlTask.resources ?? [],
           skillId: urlTask.skillId,
-          skillName: getSkill(urlTask.skillId)?.name ?? props.skillName,
+          skillName: getSkillLabel(urlTask.skillId) || props.skillName,
         }
       : props;
     setDisplay(active);
@@ -189,6 +188,7 @@ export default function SessionTimer(props: Props) {
   const progressRatio = 1 - remainingSec / plannedSec;
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="flex min-h-[70dvh] flex-col justify-center py-8">
       <AnimatePresence mode="wait">
         {(phase === 'running' || phase === 'paused') && (
@@ -201,20 +201,20 @@ export default function SessionTimer(props: Props) {
           >
             <div className="flex items-center justify-between">
               <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                SESSION {String(session?.number ?? 0).padStart(3, '0')}
+                SESIÓN {String(session?.number ?? 0).padStart(3, '0')}
               </p>
-              <p className={`font-mono text-[10px] uppercase tracking-[0.14em] ${phase === 'running' ? 'text-signal' : 'text-muted'}`}>
-                {phase === 'running' ? 'RUNNING' : 'PAUSED'}
+              <p role="status" className={`font-mono text-[10px] uppercase tracking-[0.14em] ${phase === 'running' ? 'text-signal-ink' : 'text-muted'}`}>
+                {phase === 'running' ? 'EN MARCHA' : 'EN PAUSA'}
               </p>
             </div>
 
             <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-muted">{display.skillName}</p>
 
-            <p className="mt-2 font-display text-[clamp(3.5rem,18vw,6rem)] font-bold leading-none tabular-nums tracking-tight text-ink">
+            <p role="timer" className="mt-2 font-display text-[clamp(3.5rem,18vw,6rem)] font-bold leading-none tabular-nums tracking-tight text-ink">
               {formatClock(remainingSec)}
             </p>
 
-            <div className="mt-3 h-px w-full bg-rule">
+            <div className="mt-3 h-px w-full bg-rule" aria-hidden="true">
               <div
                 className="h-px bg-signal transition-[width] duration-200 ease-out"
                 style={{ width: `${Math.min(100, Math.max(0, progressRatio * 100))}%` }}
@@ -222,19 +222,58 @@ export default function SessionTimer(props: Props) {
             </div>
 
             <p className="mt-6 font-display text-lg font-bold uppercase leading-snug text-ink">{display.taskTitle}</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TASK {display.taskNumber}</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TAREA {display.taskNumber}</p>
 
             {display.taskBrief && (
-              <p className="mt-3 font-body text-sm leading-relaxed text-ink">{display.taskBrief}</p>
+              <p className="measure mt-3 font-body text-sm leading-relaxed text-ink">{display.taskBrief}</p>
+            )}
+
+            {display.taskSteps.length > 0 && (
+              <div className="mt-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Cómo</p>
+                <ol className="mt-2 space-y-1.5">
+                  {display.taskSteps.map((step, i) => (
+                    <li key={i} className="flex gap-2 font-body text-sm text-ink">
+                      <span className="shrink-0 font-mono text-[10px] text-muted">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="measure">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
+            {display.taskResources.length > 0 && (
+              <div className="mt-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Material</p>
+                <ul className="mt-2 space-y-1">
+                  {display.taskResources.map((resource) => (
+                    <li key={resource.url}>
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="inline-flex items-baseline gap-2 py-1"
+                      >
+                        <span className="shrink-0 border border-rule px-1 py-px font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
+                          {RESOURCE_KIND_LABELS[resource.kind]}
+                        </span>
+                        <span className="font-body text-sm text-ink underline decoration-rule-strong underline-offset-4">
+                          {resource.label}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             {display.taskDoneWhen.length > 0 && (
               <div className="mt-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Done when</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Hecho cuando</p>
                 <ul className="mt-2 space-y-1.5">
                   {display.taskDoneWhen.map((item, i) => (
                     <li key={i} className="flex gap-2 font-body text-sm text-ink">
-                      <span className="text-muted">□</span>
+                      <span className="text-muted" aria-hidden="true">□</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -245,11 +284,11 @@ export default function SessionTimer(props: Props) {
             <div className="mt-8 h-px w-full bg-rule" />
             <div className="mt-4 flex justify-between">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Start</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Inicio</p>
                 <p className="font-mono text-xs text-ink">{startClock}</p>
               </div>
               <div className="text-right">
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Target</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Objetivo</p>
                 <p className="font-mono text-xs text-ink">{targetClock}</p>
               </div>
             </div>
@@ -260,9 +299,9 @@ export default function SessionTimer(props: Props) {
                 <button
                   type="button"
                   onClick={handlePause}
-                  className="flex-1 border border-rule px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors duration-150 active:bg-rule min-h-[52px]"
+                  className="flex-1 border border-rule-strong px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors duration-150 active:bg-rule min-h-[52px]"
                 >
-                  Pause
+                  Pausar
                 </button>
               ) : (
                 <button
@@ -270,15 +309,15 @@ export default function SessionTimer(props: Props) {
                   onClick={handleResume}
                   className="flex-1 border border-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors duration-150 active:bg-ink active:text-paper min-h-[52px]"
                 >
-                  Resume
+                  Reanudar
                 </button>
               )}
               <button
                 type="button"
                 onClick={finishNow}
-                className="flex-1 border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 active:bg-signal active:border-signal min-h-[52px]"
+                className="flex-1 border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 active:bg-signal-ink active:border-signal-ink min-h-[52px]"
               >
-                Finish
+                Terminar
               </button>
             </div>
           </motion.div>
@@ -292,31 +331,31 @@ export default function SessionTimer(props: Props) {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: easing }}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-signal">Session Complete</p>
+            <p role="status" className="font-mono text-[10px] uppercase tracking-[0.14em] text-signal-ink">Sesión Completada</p>
             <p className="mt-3 font-display text-4xl font-bold text-ink">
               {formatClock(Math.min(plannedSec, Math.max(0, plannedSec - remainingSec)))}
             </p>
-            <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-muted">{display.skillName} · TASK {display.taskNumber}</p>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-muted">{display.skillName} · TAREA {display.taskNumber}</p>
 
             <div className="mt-8 h-px w-full bg-rule" />
 
             <label className="mt-6 block">
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">What did you learn?</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">¿Qué has aprendido?</span>
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={3}
-                placeholder="Implemented custom hook and tested API fetching."
-                className="mt-2 w-full resize-none border border-rule bg-paper px-3 py-3 font-mono text-sm text-ink outline-none focus-visible:border-ink"
+                placeholder="Hook personalizado implementado y fetch de la API testeado."
+                className="mt-2 w-full resize-none border border-rule-strong bg-paper px-3 py-3 font-mono text-sm text-ink outline-none focus-visible:border-ink"
               />
             </label>
 
             <button
               type="button"
               onClick={handleSave}
-              className="mt-6 w-full border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 active:bg-signal active:border-signal min-h-[52px]"
+              className="mt-6 w-full border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 active:bg-signal-ink active:border-signal-ink min-h-[52px]"
             >
-              Save Session
+              Guardar Sesión
             </button>
           </motion.div>
         )}
@@ -330,14 +369,14 @@ export default function SessionTimer(props: Props) {
             className="relative border border-ink px-5 py-6"
           >
             <div className="flex items-center justify-between">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted">Session / {String(saved.number).padStart(3, '0')}</p>
+              <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted">Sesión / {String(saved.number).padStart(3, '0')}</p>
               <motion.p
                 initial={{ opacity: 0, scale: 1.15 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.12, duration: 0.24, ease: easing }}
-                className="border border-signal px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-signal"
+                className="border border-signal-ink px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-signal-ink"
               >
-                Complete
+                Completada
               </motion.p>
             </div>
 
@@ -345,28 +384,28 @@ export default function SessionTimer(props: Props) {
 
             <dl className="mt-4 space-y-3">
               <div className="flex justify-between">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Date</dt>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Fecha</dt>
                 <dd className="font-mono text-xs text-ink">{formatReceiptDate(new Date(saved.completedAt ?? saved.date))}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Time</dt>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Hora</dt>
                 <dd className="font-mono text-xs text-ink">{formatTimeOfDay(new Date(saved.completedAt ?? saved.date))}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Focus</dt>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Foco</dt>
                 <dd className="font-mono text-xs text-ink">{display.skillName.toUpperCase()}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Duration</dt>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Duración</dt>
                 <dd className="font-mono text-xs text-ink">{formatClock(saved.durationActualMin * 60)}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Task</dt>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Tarea</dt>
                 <dd className="text-right font-mono text-xs text-ink">{display.taskTitle}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Status</dt>
-                <dd className="font-mono text-xs text-signal">COMPLETE</dd>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Estado</dt>
+                <dd className="font-mono text-xs text-signal-ink">COMPLETADA</dd>
               </div>
               <div className="flex justify-between">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Checksum</dt>
@@ -380,11 +419,12 @@ export default function SessionTimer(props: Props) {
               href="/"
               className="mt-6 inline-flex w-full items-center justify-center border border-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors duration-150 active:bg-ink active:text-paper min-h-[52px]"
             >
-              Done For Today
+              Hecho Por Hoy
             </a>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+    </MotionConfig>
   );
 }

@@ -1,0 +1,68 @@
+---
+import type { Task } from '../../../types';
+import ResourceList from './ResourceList.astro';
+
+interface Props {
+  task: Task;
+}
+const { task } = Astro.props;
+---
+<details class="border-t border-rule">
+  <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 py-2">
+    <span class="flex items-baseline gap-2">
+      <span class="font-mono text-[10px] text-muted">{String(task.number).padStart(3, '0')}</span>
+      <span class="font-body text-sm text-ink">{task.title}</span>
+    </span>
+    <span
+      data-task-id={task.id}
+      class="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-muted"
+    >
+      PENDIENTE
+    </span>
+  </summary>
+
+  <div class="space-y-4 pb-4 pl-6">
+    <p class="measure font-body text-sm leading-relaxed text-muted">{task.brief}</p>
+
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Cómo</p>
+      <ol class="mt-2 space-y-1.5">
+        {task.steps.map((step, i) => (
+          <li class="flex gap-2 font-body text-sm text-ink">
+            <span class="shrink-0 font-mono text-[10px] text-muted">{String(i + 1).padStart(2, '0')}</span>
+            <span class="measure">{step}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div>
+      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Hecho cuando</p>
+      <ul class="mt-2 space-y-1.5">
+        {task.doneWhen.map((item) => (
+          <li class="flex gap-2 font-body text-sm text-ink">
+            <span class="text-muted" aria-hidden="true">□</span>
+            <span class="measure">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {task.resources && task.resources.length > 0 && (
+      <div>
+        <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Material</p>
+        <ResourceList resources={task.resources} class="mt-2" />
+      </div>
+    )}
+
+    <div class="flex items-center justify-between gap-4 pt-1">
+      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">EST. {task.estMinutes} MIN</p>
+      <a
+        href={`/session?task=${task.id}`}
+        class="inline-flex min-h-11 items-center border border-rule-strong px-4 font-mono text-[10px] uppercase tracking-[0.16em] text-ink transition-colors duration-150 hover:bg-ink hover:text-paper"
+      >
+        Empezar sesión
+      </a>
+    </div>
+  </div>
+</details>

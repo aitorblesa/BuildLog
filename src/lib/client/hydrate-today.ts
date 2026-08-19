@@ -1,7 +1,8 @@
 import { ProgressRepository } from '../../repositories/ProgressRepository';
 import { SessionRepository, formatFocusDuration } from '../../repositories/SessionRepository';
 import { SettingsRepository } from '../../repositories/SettingsRepository';
-import { getPhase, getSkill, getTasksForPhase } from '../../data/roadmap';
+import { getPhase, getSkillLabel, getTasksForPhase } from '../../data/roadmap';
+import { SKILL_STATE_LABELS } from '../../types';
 
 function setText(id: string, value: string): void {
   const el = document.getElementById(id);
@@ -19,16 +20,16 @@ function hydrateToday(): void {
   if (phase) {
     setText('current-phase-number', String(phase.number).padStart(2, '0'));
     setText('current-phase-name', phase.name.toUpperCase());
-    const skillId = phase.skillIds[0];
-    const skill = skillId ? getSkill(skillId) : undefined;
-    if (skill) {
-      setText('current-focus', skill.name.toUpperCase());
-      setText('current-focus-state', ProgressRepository.skillState(skill.id).replace(/_/g, ' '));
+    // El foco es la lección de la siguiente tarea, no la primera skill de la fase.
+    const skillId = task?.skillId ?? phase.skillIds[0];
+    if (skillId) {
+      setText('current-focus', getSkillLabel(skillId).toUpperCase());
+      setText('current-focus-state', SKILL_STATE_LABELS[ProgressRepository.skillState(skillId)]);
     }
   }
 
   if (task) {
-    setText('task-number', `TASK ${String(task.number).padStart(3, '0')}`);
+    setText('task-number', `TAREA ${String(task.number).padStart(3, '0')}`);
     setText('task-title', task.title.toUpperCase());
     setText('task-est', `${task.estMinutes} MIN`);
     const startLink = document.getElementById('start-session-link');
@@ -41,9 +42,8 @@ function hydrateToday(): void {
   setText('week-sessions', String(week.sessions).padStart(2, '0'));
   setText('week-minimum-days', `${week.completedDays} / 7`);
 
-  const nextSkill = upcoming ? getSkill(upcoming.skillId) : undefined;
-  if (nextSkill) {
-    setText('next-target', nextSkill.name.toUpperCase());
+  if (upcoming) {
+    setText('next-target', getSkillLabel(upcoming.skillId).toUpperCase());
   }
 
   const isDone = SessionRepository.isTodayMinimumDay();

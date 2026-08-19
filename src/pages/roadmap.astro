@@ -3,67 +3,57 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Rule from '../components/ui/Rule.astro';
 import SpecLabel from '../components/ui/SpecLabel.astro';
 import MilestoneRow from '../components/features/roadmap/MilestoneRow.astro';
-import { PHASES, MILESTONES, getSkillsForPhase, getTasksForPhase } from '../data/roadmap';
+import SkillBlock from '../components/features/roadmap/SkillBlock.astro';
+import { PHASES, TASKS, MILESTONES, getRootSkillsForPhase, getTasksForPhase } from '../data/roadmap';
 ---
-<BaseLayout title="Roadmap" active="roadmap">
+<BaseLayout title="Ruta" active="roadmap">
   <header class="mb-8">
-    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Frontend Career OS</p>
-    <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">ROADMAP</h1>
-    <p class="mt-1 font-mono text-xs text-muted">{String(PHASES.length).padStart(2, '0')} PHASES · JS → REACT → NEXT → TESTING → VUE → BACKEND → SQL → PRO</p>
+    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">SO de Carrera Frontend</p>
+    <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">RUTA</h1>
+    <p class="mt-1 font-mono text-xs text-muted">
+      {String(PHASES.length).padStart(2, '0')} FASES · {TASKS.length} TAREAS · JS → REACT → NEXT → TESTING → VUE → BACKEND → SQL → PRO
+    </p>
   </header>
 
   <Rule />
 
   <section class="py-6">
     {PHASES.map((phase) => {
-      const skills = getSkillsForPhase(phase.id);
+      const rootSkills = getRootSkillsForPhase(phase.id);
       const tasks = getTasksForPhase(phase.id);
       return (
         <details class="group border-b border-rule py-4" open={phase.number === 1}>
-          <summary class="flex cursor-pointer list-none items-center justify-between">
+          <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4">
             <span class="flex items-baseline gap-3">
               <span class="font-mono text-xs text-muted">{String(phase.number).padStart(2, '0')}</span>
               <span class="font-display text-lg font-bold text-ink">{phase.name.toUpperCase()}</span>
             </span>
-            <span class="font-mono text-[15px] text-ink transition-transform duration-150 group-open:rotate-45">+</span>
+            <span class="font-mono text-[15px] text-ink transition-transform duration-150 group-open:rotate-45" aria-hidden="true">+</span>
           </summary>
 
-          <div class="mt-4 space-y-4 pl-8">
-            <p class="font-body text-sm text-muted">{phase.goal}</p>
-
-            <div>
-              <SpecLabel>Skills</SpecLabel>
-              <ul class="mt-2 space-y-2">
-                {skills.map((skill) => (
-                  <li class="flex items-center justify-between">
-                    <span class="font-body text-sm text-ink">{skill.name}</span>
-                    <span
-                      data-skill-state
-                      data-skill-id={skill.id}
-                      class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted"
-                    >
-                      NOT STARTED
-                    </span>
-                  </li>
-                ))}
-              </ul>
+          <div class="mt-4 space-y-6 sm:pl-8">
+            <div class="space-y-2">
+              <p class="measure font-body text-sm text-muted">{phase.goal}</p>
+              <div class="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  {String(rootSkills.length).padStart(2, '0')} BLOQUES
+                </p>
+                <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  {String(tasks.length).padStart(2, '0')} TAREAS
+                </p>
+                <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+                  {tasks.reduce((min, t) => min + t.estMinutes, 0)} MIN EST.
+                </p>
+              </div>
             </div>
 
             <div>
-              <SpecLabel>Tasks</SpecLabel>
-              <ul class="mt-2 space-y-2">
-                {tasks.map((task) => (
-                  <li class="flex items-center justify-between gap-4">
-                    <span class="font-body text-sm text-ink">{task.title}</span>
-                    <span
-                      data-task-id={task.id}
-                      class="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-muted"
-                    >
-                      PENDING
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <SpecLabel>Resultado</SpecLabel>
+              <p class="measure mt-1 font-body text-sm text-ink">{phase.outcome}</p>
+            </div>
+
+            <div class="space-y-8">
+              {rootSkills.map((skill) => <SkillBlock skill={skill} />)}
             </div>
           </div>
         </details>
@@ -74,7 +64,7 @@ import { PHASES, MILESTONES, getSkillsForPhase, getTasksForPhase } from '../data
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Milestones</SpecLabel>
+    <SpecLabel>Hitos</SpecLabel>
     <div class="mt-2">
       {MILESTONES.map((milestone) => (
         <>

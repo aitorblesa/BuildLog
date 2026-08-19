@@ -3,7 +3,7 @@ import type { ProgressState, SkillState, MilestoneStatus } from '../types';
 import { SKILLS, TASKS, MILESTONES, getTasksForPhase } from '../data/roadmap';
 
 const defaultState: ProgressState = {
-  skillStates: Object.fromEntries(SKILLS.map((s, i) => [s.id, i === 0 ? 'PRACTICING' : i < 3 ? 'LEARNING' : 'NOT_STARTED'])) as Record<string, SkillState>,
+  skillStates: Object.fromEntries(SKILLS.map((s) => [s.id, 'NOT_STARTED'])) as Record<string, SkillState>,
   completedTaskIds: [],
   milestoneStatuses: Object.fromEntries(MILESTONES.map((m) => [m.id, m.status])) as Record<string, MilestoneStatus>,
 };

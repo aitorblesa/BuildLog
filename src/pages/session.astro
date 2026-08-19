@@ -1,24 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SessionTimer from '../components/features/session/SessionTimer.tsx';
-import { TASKS, getSkill } from '../data/roadmap';
+import { TASKS, getSkillLabel } from '../data/roadmap';
 
 const taskId = Astro.url.searchParams.get('task');
 const task = taskId ? TASKS.find((t) => t.id === taskId) : TASKS[0];
-const skill = task ? getSkill(task.skillId) : undefined;
+const skillName = task ? getSkillLabel(task.skillId) : '';
 ---
-<BaseLayout title="Session" active="today" nav={false}>
-  <a href="/" class="inline-flex font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
-    ← Exit
+<BaseLayout title="Sesión" active="today" nav={false}>
+  <a href="/" class="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+    ← Salir
   </a>
   <SessionTimer
     client:load
     taskId={task?.id ?? null}
     taskNumber={task ? String(task.number).padStart(3, '0') : '000'}
-    taskTitle={task?.title.toUpperCase() ?? 'FOCUS SESSION'}
+    taskTitle={task?.title.toUpperCase() ?? 'SESIÓN DE FOCO'}
     taskBrief={task?.brief ?? null}
+    taskSteps={task?.steps ?? []}
     taskDoneWhen={task?.doneWhen ?? []}
+    taskResources={task?.resources ?? []}
     skillId={task?.skillId ?? null}
-    skillName={skill?.name ?? 'FRONTEND'}
+    skillName={skillName || 'FRONTEND'}
   />
 </BaseLayout>

@@ -7,13 +7,16 @@ interface Props {
 }
 const { href, type = 'button', id, class: className = '' } = Astro.props;
 const Tag = href ? 'a' : 'button';
+const isExternal = Boolean(href && /^(https?:)?\/\//.test(href));
 const base =
-  'inline-flex w-full items-center justify-center gap-2 border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 ease-out active:bg-signal active:border-signal min-h-[52px]';
+  'inline-flex w-full items-center justify-center gap-2 border border-ink bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-paper transition-colors duration-150 ease-out active:bg-signal-ink active:border-signal-ink min-h-[52px]';
 ---
 <Tag
   href={href}
   type={!href ? type : undefined}
   id={id}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noreferrer noopener' : undefined}
   class:list={[base, className]}
 >
   <slot />

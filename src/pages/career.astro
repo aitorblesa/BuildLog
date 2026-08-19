@@ -5,12 +5,13 @@ import SpecLabel from '../components/ui/SpecLabel.astro';
 import CornerFrame from '../components/ui/CornerFrame.astro';
 import MilestoneRow from '../components/features/roadmap/MilestoneRow.astro';
 import { MILESTONES, PROJECTS } from '../data/roadmap';
+import { PROJECT_STATUS_LABELS } from '../types';
 ---
-<BaseLayout title="Career" active="career">
+<BaseLayout title="Carrera" active="career">
   <header class="mb-8">
-    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Frontend Career OS</p>
-    <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">ROAD TO 50K</h1>
-    <p class="mt-1 font-mono text-xs text-muted">CAREER TRANSITION · NOT A GUARANTEE, A TARGET</p>
+    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">SO de Carrera Frontend</p>
+    <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">CAMINO A 50K</h1>
+    <p class="mt-1 font-mono text-xs text-muted">TRANSICIÓN DE CARRERA · NO ES UNA GARANTÍA, ES UN OBJETIVO</p>
   </header>
 
   <Rule />
@@ -18,30 +19,30 @@ import { MILESTONES, PROJECTS } from '../data/roadmap';
   <section class="py-6">
     <CornerFrame class="border border-rule px-4 py-5">
       <div class="flex items-center justify-between">
-        <SpecLabel>Current</SpecLabel>
-        <span class="font-mono text-[10px] text-muted">↓</span>
+        <SpecLabel>Actual</SpecLabel>
+        <span class="font-mono text-[10px] text-muted" aria-hidden="true">↓</span>
       </div>
-      <p id="road-current-phase" class="mt-1 font-display text-lg font-bold text-ink">01 · MODERN FRONTEND FOUNDATION</p>
+      <p id="road-current-phase" class="mt-1 font-display text-lg font-bold text-ink">01 · FUNDAMENTOS DE FRONTEND MODERNO</p>
 
       <Rule class="my-4" />
 
-      <SpecLabel>Current Focus</SpecLabel>
+      <SpecLabel>Foco Actual</SpecLabel>
       <p id="road-current-focus" class="mt-1 font-display text-lg font-bold text-ink">REACT</p>
 
       <Rule class="my-4" />
 
-      <SpecLabel>Next</SpecLabel>
-      <p id="road-next-milestone" class="mt-1 font-display text-lg font-bold text-ink">M01 · REACT FOUNDATION</p>
+      <SpecLabel>Siguiente</SpecLabel>
+      <p id="road-next-milestone" class="mt-1 font-display text-lg font-bold text-ink">M01 · BASE DE REACT</p>
 
       <Rule class="my-4" />
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <SpecLabel>Target</SpecLabel>
-          <p class="mt-1 font-display text-2xl font-bold text-signal">40&ndash;50K</p>
+          <SpecLabel>Objetivo</SpecLabel>
+          <p class="mt-1 font-display text-2xl font-bold text-signal-ink">40&ndash;50K</p>
         </div>
         <div>
-          <SpecLabel>Time Horizon</SpecLabel>
+          <SpecLabel>Horizonte Temporal</SpecLabel>
           <p class="mt-1 font-display text-2xl font-bold text-ink">24M</p>
         </div>
       </div>
@@ -51,17 +52,16 @@ import { MILESTONES, PROJECTS } from '../data/roadmap';
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Main Gaps</SpecLabel>
+    <SpecLabel>Carencias Principales</SpecLabel>
     <ul id="road-gaps" class="mt-3 space-y-2">
-      <li class="font-body text-sm text-muted">Calculating…</li>
+      <li class="font-body text-sm text-muted">Calculando…</li>
     </ul>
   </section>
 
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Milestones</SpecLabel>
-    <p class="mt-1 font-mono text-[10px] text-muted">TAP TO UPDATE STATUS · NOT DATE-BOUND</p>
+    <SpecLabel>Hitos</SpecLabel>
     <div class="mt-2">
       {MILESTONES.map((milestone) => (
         <>
@@ -79,7 +79,7 @@ import { MILESTONES, PROJECTS } from '../data/roadmap';
         <div class="border border-rule px-4 py-4">
           <div class="flex items-baseline justify-between">
             <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{project.code}</span>
-            <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{project.status}</span>
+            <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{PROJECT_STATUS_LABELS[project.status]}</span>
           </div>
           <p class="mt-2 font-display text-lg font-bold text-ink">{project.title}</p>
           <p class="mt-1 font-mono text-xs text-muted">{project.type}</p>
@@ -94,53 +94,26 @@ import { MILESTONES, PROJECTS } from '../data/roadmap';
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Learning vs Career Capital</SpecLabel>
+    <SpecLabel>Aprendizaje vs Capital Profesional</SpecLabel>
     <div class="mt-3 grid grid-cols-2 gap-4">
       <div>
-        <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Learning</p>
-        <p class="mt-2 font-body text-sm text-ink">Learn useReducer.</p>
-        <p class="mt-1 font-body text-sm text-ink">Read the Server Components docs.</p>
+        <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Aprendizaje</p>
+        <p class="mt-2 font-body text-sm text-ink">Aprender useReducer.</p>
+        <p class="mt-1 font-body text-sm text-ink">Leer la documentación de Server Components.</p>
       </div>
       <div>
-        <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-signal">Career Capital</p>
-        <p class="mt-2 font-body text-sm text-ink">Apply it in a well-designed project.</p>
-        <p class="mt-1 font-body text-sm text-ink">Add tests. Document it. Ship it.</p>
+        <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-signal-ink">Capital Profesional</p>
+        <p class="mt-2 font-body text-sm text-ink">Aplicarlo en un proyecto bien diseñado.</p>
+        <p class="mt-1 font-body text-sm text-ink">Añadir tests. Documentarlo. Publicarlo.</p>
       </div>
     </div>
   </section>
 
   <Rule />
 
-  <section class="py-6">
-    <SpecLabel>Frontend Career Coach</SpecLabel>
-    <p class="mt-1 font-mono text-[10px] text-muted">LOCAL · OFFLINE STUB — READY FOR AI INTEGRATION</p>
-
-    <div id="coach-transcript" class="mt-4 max-h-64 space-y-4 overflow-y-auto border border-rule px-4 py-4"></div>
-
-    <div id="coach-suggestions" class="mt-3 flex flex-wrap gap-2"></div>
-
-    <form id="coach-form" class="mt-3 flex gap-2">
-      <input
-        id="coach-input"
-        type="text"
-        aria-label="Ask the career coach"
-        placeholder="Ask the coach…"
-        class="min-w-0 flex-1 border border-rule bg-paper px-3 py-3 font-body text-sm text-ink outline-none focus-visible:border-ink"
-      />
-      <button
-        type="submit"
-        class="shrink-0 border border-ink bg-ink px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-paper transition-colors duration-150 active:bg-signal active:border-signal"
-      >
-        Ask
-      </button>
-    </form>
-  </section>
-
-  <Rule />
-
   <footer class="py-6">
-    <a href="/settings" class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
-      Settings →
+    <a href="/settings" class="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+      Ajustes →
     </a>
   </footer>
 

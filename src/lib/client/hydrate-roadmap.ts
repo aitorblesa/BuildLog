@@ -1,10 +1,11 @@
 import { ProgressRepository } from '../../repositories/ProgressRepository';
+import { MILESTONE_STATUS_LABELS, SKILL_STATE_LABELS } from '../../types';
 import type { MilestoneStatus } from '../../types';
 
 const CYCLE: MilestoneStatus[] = ['PENDING', 'ACTIVE', 'DONE'];
 
 function statusClass(status: MilestoneStatus): string {
-  if (status === 'DONE') return 'text-signal';
+  if (status === 'DONE') return 'text-signal-ink';
   if (status === 'ACTIVE') return 'text-ink';
   return 'text-muted';
 }
@@ -13,7 +14,7 @@ function paintRow(row: HTMLElement, status: MilestoneStatus): void {
   row.dataset.status = status;
   const label = row.querySelector('.milestone-status');
   if (label) {
-    label.textContent = status;
+    label.textContent = MILESTONE_STATUS_LABELS[status];
     label.className = `milestone-status font-mono text-[10px] uppercase tracking-[0.14em] ${statusClass(status)}`;
   }
 }
@@ -23,8 +24,8 @@ function hydrateSkillStates(): void {
     const skillId = el.dataset.skillId;
     if (!skillId) return;
     const state = ProgressRepository.skillState(skillId);
-    el.textContent = state.replace(/_/g, ' ');
-    el.classList.toggle('text-signal', state === 'INTERVIEW_READY' || state === 'USED_IN_PROJECT');
+    el.textContent = SKILL_STATE_LABELS[state];
+    el.classList.toggle('text-signal-ink', state === 'INTERVIEW_READY' || state === 'USED_IN_PROJECT');
     el.classList.toggle('text-muted', state === 'NOT_STARTED');
   });
 }
@@ -34,8 +35,8 @@ function hydrateTaskStatus(): void {
     const taskId = el.dataset.taskId;
     if (!taskId) return;
     if (ProgressRepository.isTaskComplete(taskId)) {
-      el.textContent = 'DONE';
-      el.classList.add('text-signal');
+      el.textContent = 'HECHO';
+      el.classList.add('text-signal-ink');
       el.classList.remove('text-muted');
     }
   });

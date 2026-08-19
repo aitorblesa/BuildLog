@@ -5,47 +5,49 @@ import SpecLabel from '../components/ui/SpecLabel.astro';
 import CornerFrame from '../components/ui/CornerFrame.astro';
 import PrimaryAction from '../components/ui/PrimaryAction.astro';
 import MeasurementRule from '../components/ui/MeasurementRule.astro';
-import { PHASES } from '../data/roadmap';
+import { PHASES, TASKS, getSkillLabel } from '../data/roadmap';
 
 const totalPhases = PHASES.length;
+// Marcador previo a la hidratación: la primera tarea de la ruta.
+const firstTask = TASKS[0];
 ---
-<BaseLayout title="Today" active="today">
+<BaseLayout title="Hoy" active="today">
   <header class="mb-8">
-    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Frontend Career OS</p>
+    <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">SO de Carrera Frontend</p>
     <h1 class="mt-2 font-display text-3xl font-bold leading-[0.95] tracking-tight text-ink sm:text-4xl">
-      ROAD TO 40&ndash;50K
+      CAMINO A 40&ndash;50K
     </h1>
     <p class="mt-1 font-mono text-xs text-muted">
-      PHASE <span id="current-phase-number">01</span> / {String(totalPhases).padStart(2, '0')}
+      FASE <span id="current-phase-number">01</span> / {String(totalPhases).padStart(2, '0')}
     </p>
   </header>
 
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Current Focus</SpecLabel>
+    <SpecLabel>Foco Actual</SpecLabel>
     <div class="mt-2 flex items-baseline justify-between">
-      <p id="current-focus" class="font-display text-2xl font-bold text-ink">REACT</p>
-      <p id="current-focus-state" class="font-mono text-[10px] uppercase tracking-[0.14em] text-signal">PRACTICING</p>
+      <p id="current-focus" class="font-display text-2xl font-bold text-ink">{getSkillLabel(firstTask.skillId).toUpperCase()}</p>
+      <p id="current-focus-state" class="font-mono text-[10px] uppercase tracking-[0.14em] text-signal-ink">SIN EMPEZAR</p>
     </div>
-    <p id="current-phase-name" class="mt-1 font-mono text-xs text-muted">MODERN FRONTEND FOUNDATION</p>
+    <p id="current-phase-name" class="mt-1 font-mono text-xs text-muted">FUNDAMENTOS DE FRONTEND MODERNO</p>
   </section>
 
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Today</SpecLabel>
+    <SpecLabel>Hoy</SpecLabel>
     <CornerFrame class="mt-3 border border-rule px-4 py-5">
-      <p id="task-number" class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TASK 001</p>
+      <p id="task-number" class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">TAREA {String(firstTask.number).padStart(3, '0')}</p>
       <h2 id="task-title" class="mt-2 font-display text-xl font-bold leading-tight text-ink sm:text-2xl">
-        REFACTOR A FUNCTION USING DESTRUCTURING
+        {firstTask.title.toUpperCase()}
       </h2>
       <div class="mt-3 flex items-center justify-between">
-        <p class="font-mono text-xs text-muted">EST. <span id="task-est">25 MIN</span></p>
+        <p class="font-mono text-xs text-muted">EST. <span id="task-est">{firstTask.estMinutes} MIN</span></p>
       </div>
-      <MeasurementRule class="mt-4" ticks={10} label="25 MIN SESSION" />
+      <MeasurementRule class="mt-4" ticks={10} label="SESIÓN DE 25 MIN" />
       <PrimaryAction id="start-session-link" href="/session" class="mt-5">
-        Start Session
+        Empezar Sesión
       </PrimaryAction>
     </CornerFrame>
   </section>
@@ -53,31 +55,31 @@ const totalPhases = PHASES.length;
   <Rule />
 
   <section id="work-first-block" class="py-6" hidden>
-    <SpecLabel>Work First / Play Later</SpecLabel>
+    <SpecLabel>Primero Trabajar / Luego Jugar</SpecLabel>
     <div id="work-first-pending" class="mt-2">
-      <p class="font-mono text-xs text-muted">BEFORE TFT — COMPLETE TODAY'S 25 MIN SESSION.</p>
+      <p class="font-mono text-xs text-muted">ANTES DEL TFT — COMPLETA LA SESIÓN DE 25 MIN DE HOY.</p>
     </div>
     <div id="work-first-done" class="mt-2" hidden>
-      <p class="font-mono text-xs text-signal">DONE FOR TODAY — PLAY GUILT-FREE.</p>
+      <p class="font-mono text-xs text-signal-ink">HECHO POR HOY — JUEGA SIN CULPA.</p>
     </div>
   </section>
 
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>This Week</SpecLabel>
+    <SpecLabel>Esta Semana</SpecLabel>
     <div class="mt-3 grid grid-cols-3 gap-4">
       <div>
         <p id="week-focus" class="font-display text-xl font-bold text-ink">00:00</p>
-        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Focus</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Foco</p>
       </div>
       <div>
         <p id="week-sessions" class="font-display text-xl font-bold text-ink">00</p>
-        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Sessions</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Sesiones</p>
       </div>
       <div>
         <p id="week-minimum-days" class="font-display text-xl font-bold text-ink">0 / 7</p>
-        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Min. Days</p>
+        <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Días Mín.</p>
       </div>
     </div>
   </section>
@@ -85,8 +87,8 @@ const totalPhases = PHASES.length;
   <Rule />
 
   <section class="py-6">
-    <SpecLabel>Next</SpecLabel>
-    <p id="next-target" class="mt-2 font-display text-lg font-bold text-ink">REACT TESTING LIBRARY</p>
+    <SpecLabel>Siguiente</SpecLabel>
+    <p id="next-target" class="mt-2 font-display text-lg font-bold text-ink">{getSkillLabel(TASKS[1].skillId).toUpperCase()}</p>
   </section>
 
   <script src="../lib/client/hydrate-today.ts"></script>

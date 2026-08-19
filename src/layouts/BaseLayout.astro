@@ -1,6 +1,8 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import BottomNav from '../components/layout/BottomNav.astro';
+import TopBar from '../components/layout/TopBar.astro';
+import Sidebar from '../components/layout/Sidebar.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -11,12 +13,12 @@ interface Props {
 const { title, active, nav = true } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#eef1f5" />
-    <meta name="description" content="Frontend Career OS — a personal progress and anti-procrastination system." />
+    <meta name="description" content="SO de Carrera Frontend — un sistema personal de progreso y anti-procrastinación." />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -30,10 +32,27 @@ const { title, active, nav = true } = Astro.props;
     <ClientRouter />
   </head>
   <body class="blueprint-grid">
-    <div class:list={['safe-top mx-auto min-h-dvh max-w-360 px-4 pt-6 sm:pt-16', nav ? 'pb-24' : 'pb-6']}>
-      <slot />
-    </div>
-    {nav && <BottomNav active={active} />}
+    <a href="#main" class="skip-link font-mono text-xs uppercase tracking-[0.14em]">Saltar al contenido</a>
+    {nav ? (
+      <>
+        <TopBar />
+        <div class="lg:mx-auto lg:flex lg:max-w-360 lg:items-start">
+          <Sidebar active={active} />
+          <main id="main" class="safe-top mx-auto min-h-dvh max-w-360 lg:mx-0 lg:min-h-0 lg:max-w-none lg:flex-1">
+            <div class="px-4 pt-6 pb-24 sm:pt-16 lg:px-12 lg:pb-16 lg:pt-12">
+              <slot />
+            </div>
+          </main>
+        </div>
+        <BottomNav active={active} />
+      </>
+    ) : (
+      <main id="main" class="safe-top mx-auto min-h-dvh max-w-360">
+        <div class="px-4 pt-6 pb-6 sm:pt-16">
+          <slot />
+        </div>
+      </main>
+    )}
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

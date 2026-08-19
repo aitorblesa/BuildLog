@@ -1,7 +1,7 @@
 import { ProgressRepository } from '../../repositories/ProgressRepository';
 import { SessionRepository, formatFocusDuration } from '../../repositories/SessionRepository';
 import { ReviewRepository } from '../../repositories/ReviewRepository';
-import { SKILL_STATES } from '../../types';
+import { SKILL_STATES, SKILL_STATE_LABELS } from '../../types';
 import type { SkillState } from '../../types';
 
 function nextState(state: SkillState): SkillState {
@@ -10,7 +10,7 @@ function nextState(state: SkillState): SkillState {
 }
 
 function stateClass(state: SkillState): string {
-  if (state === 'INTERVIEW_READY' || state === 'USED_IN_PROJECT') return 'text-signal';
+  if (state === 'INTERVIEW_READY' || state === 'USED_IN_PROJECT') return 'text-signal-ink';
   if (state === 'NOT_STARTED') return 'text-muted';
   return 'text-ink';
 }
@@ -22,7 +22,7 @@ function hydrateSkillRows(): void {
     const label = row.querySelector<HTMLElement>('.skill-state-label');
     const paint = (state: SkillState) => {
       if (!label) return;
-      label.textContent = state.replace(/_/g, ' ');
+      label.textContent = SKILL_STATE_LABELS[state];
       label.className = `skill-state-label font-mono text-[10px] uppercase tracking-[0.14em] ${stateClass(state)}`;
     };
     paint(ProgressRepository.skillState(skillId));
@@ -38,8 +38,8 @@ function hydrateSkillRows(): void {
 
 function formatLogDate(iso: string): string {
   const date = new Date(iso);
-  const day = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase();
-  const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
+  const day = date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }).toUpperCase();
+  const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
   return `${day} · ${time}`;
 }
 

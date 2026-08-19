@@ -24,10 +24,29 @@ export interface Phase {
   skillIds: string[];
 }
 
+/** Tipo de material de estudio enlazado desde una skill o una tarea. */
+export type ResourceKind = 'CURSO' | 'VIDEO' | 'DOC' | 'PRACTICA';
+
+export interface Resource {
+  kind: ResourceKind;
+  label: string;
+  url: string;
+  note?: string;
+}
+
+/**
+ * Las skills forman un árbol de dos niveles: una skill raíz (React) agrupa a
+ * sus lecciones (Hooks, Formularios...) mediante parentId. Las hojas son las
+ * que llevan las tareas.
+ */
 export interface Skill {
   id: string;
   name: string;
   phaseId: string;
+  /** Ausente en las skills raíz. */
+  parentId?: string;
+  summary?: string;
+  resources?: Resource[];
 }
 
 export interface Task {
@@ -39,7 +58,10 @@ export interface Task {
   estMinutes: number;
   order: number;
   brief: string;
+  /** Guion concreto de la sesión, paso a paso. */
+  steps: string[];
   doneWhen: string[];
+  resources?: Resource[];
 }
 
 export type MilestoneStatus = 'PENDING' | 'ACTIVE' | 'DONE';
@@ -103,3 +125,35 @@ export interface ProgressState {
   completedTaskIds: string[];
   milestoneStatuses: Record<string, MilestoneStatus>;
 }
+
+/**
+ * Los valores de los enums se guardan en localStorage, así que se mantienen en
+ * inglés. Estos mapas son la única fuente de los textos visibles en castellano.
+ */
+export const SKILL_STATE_LABELS: Record<SkillState, string> = {
+  NOT_STARTED: 'SIN EMPEZAR',
+  LEARNING: 'APRENDIENDO',
+  PRACTICING: 'PRACTICANDO',
+  CONFIDENT: 'CON SOLTURA',
+  USED_IN_PROJECT: 'USADO EN PROYECTO',
+  INTERVIEW_READY: 'LISTO PARA ENTREVISTA',
+};
+
+export const RESOURCE_KIND_LABELS: Record<ResourceKind, string> = {
+  CURSO: 'CURSO',
+  VIDEO: 'VÍDEO',
+  DOC: 'DOCS',
+  PRACTICA: 'PRÁCTICA',
+};
+
+export const MILESTONE_STATUS_LABELS: Record<MilestoneStatus, string> = {
+  PENDING: 'PENDIENTE',
+  ACTIVE: 'EN CURSO',
+  DONE: 'HECHO',
+};
+
+export const PROJECT_STATUS_LABELS: Record<Project['status'], string> = {
+  PLANNED: 'PLANIFICADO',
+  IN_PROGRESS: 'EN CURSO',
+  DONE: 'HECHO',
+};

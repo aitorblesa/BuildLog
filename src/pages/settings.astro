@@ -3,36 +3,36 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Rule from '../components/ui/Rule.astro';
 import SpecLabel from '../components/ui/SpecLabel.astro';
 ---
-<BaseLayout title="Settings" active="career" nav={false}>
-  <a href="/career" class="inline-flex font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
-    ← Career
+<BaseLayout title="Ajustes" active="career" nav={false}>
+  <a href="/career" class="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+    ← Carrera
   </a>
 
-  <h1 class="mt-6 font-display text-2xl font-bold text-ink">SETTINGS</h1>
+  <h1 class="mt-6 font-display text-2xl font-bold text-ink">AJUSTES</h1>
 
   <Rule class="mt-6" />
 
   <section class="py-6">
-    <div class="flex items-center justify-between">
-      <label for="setting-work-first" class="pr-4">
-        <SpecLabel class="block">Work First / Play Later</SpecLabel>
-        <p class="mt-1 font-body text-sm text-muted">Show the pre-play gate on the Today screen.</p>
-      </label>
-      <input id="setting-work-first" type="checkbox" class="h-5 w-5 shrink-0 accent-signal" />
-    </div>
+    <label for="setting-work-first" class="flex min-h-11 cursor-pointer items-center justify-between gap-4">
+      <span class="block">
+        <SpecLabel class="block">Primero Trabajar / Luego Jugar</SpecLabel>
+        <span class="measure mt-1 block font-body text-sm text-muted">Muestra el aviso previo al ocio en la pantalla de Hoy.</span>
+      </span>
+      <input id="setting-work-first" type="checkbox" class="h-6 w-6 shrink-0 accent-ink" />
+    </label>
   </section>
 
   <Rule />
 
   <section class="py-6">
     <label for="setting-session-minutes">
-      <SpecLabel class="block">Session Length (Minutes)</SpecLabel>
+      <SpecLabel class="block">Duración de Sesión (Minutos)</SpecLabel>
       <input
         id="setting-session-minutes"
         type="number"
         min="5"
         max="90"
-        class="mt-2 w-24 border border-rule bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
+        class="mt-2 min-h-11 w-24 border border-rule-strong bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
       />
     </label>
   </section>

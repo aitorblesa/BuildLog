@@ -10,10 +10,17 @@
 @theme {
   --color-paper: #eef1f5;
   --color-ink: #101b28;
-  --color-muted: #5a6675;
-  --color-rule: #d3dae2;
+  /* 7.43:1 on paper — WCAG AAA for normal text */
+  --color-muted: #464e59;
+  /* Decorative dividers only. Never the sole boundary of a control. */
+  --color-rule: rgba(211, 218, 226, 0.8);
+  /* 3.34:1 on paper — boundary of interactive controls (WCAG 1.4.11) */
+  --color-rule-strong: #7c848e;
   --color-white: #ffffff;
+  /* Accent for non-text marks and focus rings only (3.25:1 on paper, 4.71:1 on ink) */
   --color-signal: #e4572e;
+  /* 7.04:1 on paper — the accent whenever it carries text or sits behind text */
+  --color-signal-ink: #a01900;
 
   --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --font-body: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
@@ -43,23 +50,48 @@
     background: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-body);
+    /* WCAG 1.4.8: at least 1.5x line spacing inside blocks of text */
+    line-height: 1.6;
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
   ::selection {
-    background: var(--color-signal);
-    color: var(--color-white);
+    background: var(--color-signal-ink);
+    color: var(--color-paper);
+  }
+
+  ::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
   }
 
   *:focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 3px solid var(--color-signal);
     outline-offset: 2px;
   }
 }
 
 @layer utilities {
+  /* WCAG 2.4.1: lets keyboard users jump past the repeated navigation */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    left: 0;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 0 1rem;
+  }
+
   .blueprint-grid {
     background-image:
       repeating-linear-gradient(to right, color-mix(in srgb, var(--color-rule) 30%, transparent) 0 1px, transparent 1px 24px),
@@ -81,8 +113,8 @@
 
   .corner-frame::before,
   .corner-frame::after,
-  .corner-frame > .corner-tl,
-  .corner-frame > .corner-br {
+  .corner-frame>.corner-tl,
+  .corner-frame>.corner-br {
     content: '';
     position: absolute;
     width: 8px;
@@ -104,6 +136,11 @@
     border-right: 1px solid var(--color-ink);
   }
 
+  /* WCAG 1.4.8: caps running text at a readable measure */
+  .measure {
+    max-width: 70ch;
+  }
+
   .safe-top {
     padding-top: env(safe-area-inset-top);
   }
@@ -113,37 +150,14 @@
   }
 }
 
-@keyframes buildlog-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes buildlog-fade-out {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-}
-
-::view-transition-old(root) {
-  animation: 140ms var(--ease-technical) both buildlog-fade-out;
-}
-
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: 180ms var(--ease-technical) both buildlog-fade-in;
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

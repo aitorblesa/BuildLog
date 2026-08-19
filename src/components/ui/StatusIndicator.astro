@@ -6,7 +6,7 @@ interface Props {
 }
 const { status, active = false, class: className = '' } = Astro.props;
 ---
-<span class:list={['inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em]', active ? 'text-signal' : 'text-muted', className]}>
+<span class:list={['inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em]', active ? 'text-signal-ink' : 'text-muted', className]}>
   <span class:list={['inline-block h-1.5 w-1.5', active ? 'bg-signal' : 'bg-muted']}></span>
   {status}
 </span>
