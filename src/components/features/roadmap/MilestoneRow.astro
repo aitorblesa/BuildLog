@@ -14,10 +14,10 @@ const { milestone } = Astro.props;
   data-status={milestone.status}
 >
   <span class="flex items-center gap-3">
-    <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{milestone.code}</span>
+    <span class="font-mono text-[12px] uppercase tracking-[0.14em] text-muted">{milestone.code}</span>
     <span class="font-body text-sm text-ink">{milestone.title}</span>
   </span>
-  <span class="milestone-status font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+  <span class="milestone-status font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
     {MILESTONE_STATUS_LABELS[milestone.status]}
   </span>
 </button>

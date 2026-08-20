@@ -4,7 +4,7 @@ import Rule from '../components/ui/Rule.astro';
 import SpecLabel from '../components/ui/SpecLabel.astro';
 ---
 <BaseLayout title="Ajustes" active="career" nav={false}>
-  <a href="/career" class="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+  <a href="/career" class="inline-flex min-h-11 items-center font-mono text-[12px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
     ← Carrera
   </a>
 
@@ -32,6 +32,65 @@ import SpecLabel from '../components/ui/SpecLabel.astro';
         type="number"
         min="5"
         max="90"
+        class="mt-2 min-h-11 w-24 border border-rule-strong bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
+      />
+    </label>
+  </section>
+
+  <Rule />
+
+  <section class="py-6">
+    <h2 class="font-display text-lg font-bold uppercase text-ink">Repaso con IA</h2>
+    <p class="measure mt-2 font-body text-sm text-muted">
+      El repaso te pregunta sobre lo que acabas de estudiar y corrige tus respuestas con Gemini. La clave es gratuita
+      (Google AI Studio) y se guarda solo en este navegador.
+    </p>
+
+    <label for="setting-gemini-key" class="mt-6 block">
+      <SpecLabel class="block">Clave de API de Gemini</SpecLabel>
+      <input
+        id="setting-gemini-key"
+        type="password"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="AIza…"
+        class="mt-2 min-h-11 w-full border border-rule-strong bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
+      />
+    </label>
+    <p class="mt-2 font-mono text-[12px] uppercase tracking-[0.14em] text-muted">
+      <a
+        href="https://aistudio.google.com/apikey"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="underline decoration-rule-strong underline-offset-4 hover:text-ink"
+      >Crear clave gratis en aistudio.google.com ↗</a>
+    </p>
+
+    <label for="setting-gemini-model" class="mt-6 block">
+      <SpecLabel class="block">Modelo</SpecLabel>
+      <select
+        id="setting-gemini-model"
+        class="mt-2 min-h-11 w-full border border-rule-strong bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
+      >
+      </select>
+    </label>
+
+    <button
+      id="setting-gemini-test"
+      type="button"
+      class="mt-4 inline-flex min-h-11 items-center border border-rule-strong px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors duration-150 active:bg-rule"
+    >
+      Probar conexión
+    </button>
+    <p id="setting-gemini-status" role="status" class="mt-2 font-mono text-[12px] uppercase tracking-[0.14em] text-muted"></p>
+
+    <label for="setting-quiz-questions" class="mt-6 block">
+      <SpecLabel class="block">Preguntas por Repaso</SpecLabel>
+      <input
+        id="setting-quiz-questions"
+        type="number"
+        min="2"
+        max="8"
         class="mt-2 min-h-11 w-24 border border-rule-strong bg-paper px-3 py-2 font-mono text-sm text-ink outline-none focus-visible:border-ink"
       />
     </label>

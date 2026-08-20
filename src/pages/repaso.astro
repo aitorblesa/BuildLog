@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ConceptQuiz from '../components/features/quiz/ConceptQuiz.tsx';
+import { TASKS } from '../data/roadmap';
+
+// La build es estática: esto es solo el valor de partida. El island vuelve a
+// leer `?task=` en el cliente, igual que hace el temporizador de sesión.
+const taskId = Astro.url.searchParams.get('task') ?? TASKS[0].id;
+---
+<BaseLayout title="Repaso" active="today" nav={false}>
+  <a href="/" class="inline-flex min-h-11 items-center font-mono text-[12px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+    ← Salir
+  </a>
+  <ConceptQuiz client:load taskId={taskId} />
+</BaseLayout>

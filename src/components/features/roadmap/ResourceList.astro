@@ -1,32 +1,66 @@
 ---
-import type { Resource } from '../../../types';
-import { RESOURCE_KIND_LABELS } from '../../../types';
+import type { Resource } from "../../../types";
+import { RESOURCE_KIND_LABELS } from "../../../types";
 
 interface Props {
   resources?: Resource[];
+  /** En línea: sin insignia de tipo, en la misma fila que el texto que acompaña. */
+  inline?: boolean;
   class?: string;
 }
-const { resources = [], class: className = '' } = Astro.props;
+const { resources = [], inline = false, class: className = "" } = Astro.props;
 ---
-{resources.length > 0 && (
-  <ul class:list={['space-y-1', className]}>
-    {resources.map((resource) => (
-      <li>
-        <a
-          href={resource.url}
-          target="_blank"
-          rel="noreferrer noopener"
-          class="group inline-flex min-h-11 items-baseline gap-2 text-left sm:min-h-0 sm:py-1"
-        >
-          <span class="shrink-0 border border-rule px-1 py-px font-mono text-[9px] uppercase tracking-[0.14em] text-muted">
-            {RESOURCE_KIND_LABELS[resource.kind]}
-          </span>
-          <span class="font-body text-sm text-ink underline decoration-rule-strong underline-offset-4 transition-colors duration-150 group-hover:decoration-ink">
-            {resource.label}
-          </span>
-          <span class="font-mono text-[10px] text-muted" aria-hidden="true">↗</span>
-        </a>
-      </li>
-    ))}
-  </ul>
-)}
+
+{
+  resources.length > 0 &&
+    (inline ? (
+      <ul
+        class:list={["flex min-w-0 flex-wrap items-center gap-x-3", className]}
+      >
+        {resources.map((resource) => (
+          <li class="min-w-0">
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              title={`${RESOURCE_KIND_LABELS[resource.kind]} · ${resource.label}`}
+              class="group flex min-h-11 min-w-0 items-center gap-1 opacity-60 transition-opacity duration-150 hover:opacity-100"
+            >
+              <span class="truncate font-body text-sm text-ink underline decoration-rule-strong underline-offset-4 transition-colors duration-150 group-hover:decoration-ink">
+                {resource.label}
+              </span>
+              <span
+                class="shrink-0 font-mono text-[12px] text-muted"
+                aria-hidden="true"
+              >
+                ↗
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul class:list={["space-y-1", className]}>
+        {resources.map((resource) => (
+          <li>
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              class="group inline-flex min-h-11 items-baseline gap-2 text-left sm:min-h-0 sm:py-1"
+            >
+              <span class="shrink-0 border border-rule px-1 py-px font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+                {RESOURCE_KIND_LABELS[resource.kind]}
+              </span>
+              <span class="font-body text-sm text-ink underline decoration-rule-strong underline-offset-4 transition-colors duration-150 group-hover:decoration-ink">
+                {resource.label}
+              </span>
+              <span class="font-mono text-[12px] text-muted" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ))
+}

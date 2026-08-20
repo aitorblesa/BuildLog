@@ -36,6 +36,10 @@ function hydrateToday(): void {
     if (startLink instanceof HTMLAnchorElement) {
       startLink.href = `/session?task=${task.id}`;
     }
+    const reviewLink = document.getElementById('review-task-link');
+    if (reviewLink instanceof HTMLAnchorElement) {
+      reviewLink.href = `/repaso?task=${task.id}`;
+    }
   }
 
   setText('week-focus', formatFocusDuration(week.focusMinutes));

@@ -8,7 +8,7 @@ const task = taskId ? TASKS.find((t) => t.id === taskId) : TASKS[0];
 const skillName = task ? getSkillLabel(task.skillId) : '';
 ---
 <BaseLayout title="Sesión" active="today" nav={false}>
-  <a href="/" class="inline-flex min-h-11 items-center font-mono text-[10px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
+  <a href="/" class="inline-flex min-h-11 items-center font-mono text-[12px] uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:text-ink">
     ← Salir
   </a>
   <SessionTimer

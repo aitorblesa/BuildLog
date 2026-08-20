@@ -20,7 +20,6 @@ export interface Phase {
   number: number;
   name: string;
   goal: string;
-  outcome: string;
   skillIds: string[];
 }
 
@@ -118,6 +117,43 @@ export interface Settings {
   sessionMinutes: number;
   workFirstPlayLater: boolean;
   weeklyReviewDay: number;
+  /** Clave de Google AI Studio para el repaso. Solo vive en este navegador. */
+  geminiApiKey: string;
+  geminiModel: string;
+  /** Cuántas preguntas genera cada repaso. */
+  quizQuestions: number;
+}
+
+/** Una pregunta de concepto generada por Gemini para una tarea. */
+export interface QuizQuestion {
+  /** El concepto que se está comprobando, para etiquetar la pregunta. */
+  concept: string;
+  prompt: string;
+}
+
+export type QuizVerdict = 'CORRECTO' | 'PARCIAL' | 'INCORRECTO';
+
+/** Corrección de una respuesta, tal y como la devuelve Gemini. */
+export interface QuizEvaluation {
+  verdict: QuizVerdict;
+  /** 0-100. */
+  score: number;
+  feedback: string;
+  /** Lo que faltaba o estaba mal en la respuesta. */
+  missing: string[];
+  modelAnswer: string;
+}
+
+export interface QuizAttempt {
+  id: string;
+  date: string;
+  taskId: string | null;
+  skillId: string | null;
+  concept: string;
+  question: string;
+  answer: string;
+  verdict: QuizVerdict;
+  score: number;
 }
 
 export interface ProgressState {
@@ -156,4 +192,10 @@ export const PROJECT_STATUS_LABELS: Record<Project['status'], string> = {
   PLANNED: 'PLANIFICADO',
   IN_PROGRESS: 'EN CURSO',
   DONE: 'HECHO',
+};
+
+export const QUIZ_VERDICT_LABELS: Record<QuizVerdict, string> = {
+  CORRECTO: 'CORRECTO',
+  PARCIAL: 'A MEDIAS',
+  INCORRECTO: 'INCORRECTO',
 };

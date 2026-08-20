@@ -16,18 +16,20 @@ function stateClass(state: SkillState): string {
 }
 
 function hydrateSkillRows(): void {
-  document.querySelectorAll<HTMLButtonElement>('.skill-row').forEach((row) => {
+  document.querySelectorAll<HTMLElement>('.skill-row').forEach((row) => {
     const skillId = row.dataset.skillId;
     if (!skillId) return;
     const label = row.querySelector<HTMLElement>('.skill-state-label');
     const paint = (state: SkillState) => {
       if (!label) return;
       label.textContent = SKILL_STATE_LABELS[state];
-      label.className = `skill-state-label font-mono text-[10px] uppercase tracking-[0.14em] ${stateClass(state)}`;
+      label.className = `skill-state-label shrink-0 font-mono text-[12px] uppercase tracking-[0.14em] ${stateClass(state)}`;
     };
     paint(ProgressRepository.skillState(skillId));
 
-    row.addEventListener('click', () => {
+    row.addEventListener('click', (event) => {
+      // La fila lleva enlaces al material: un clic sobre ellos no cambia el estado.
+      if (event.target instanceof Element && event.target.closest('a')) return;
       const current = ProgressRepository.skillState(skillId);
       const next = nextState(current);
       ProgressRepository.setSkillState(skillId, next);
@@ -65,7 +67,7 @@ function hydrateDailyLog(): void {
       <li class="flex items-start justify-between gap-4 py-3">
         <div class="min-w-0">
           <p class="font-body text-sm text-ink">${s.note ? escapeHtml(s.note) : escapeHtml(s.taskTitle)}</p>
-          <p class="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">${escapeHtml(s.topic)} · ${formatLogDate(s.completedAt ?? s.date)}</p>
+          <p class="mt-1 font-mono text-[12px] uppercase tracking-[0.14em] text-muted">${escapeHtml(s.topic)} · ${formatLogDate(s.completedAt ?? s.date)}</p>
         </div>
         <p class="shrink-0 font-mono text-xs text-ink">${String(s.durationActualMin).padStart(2, '0')} MIN</p>
       </li>`,

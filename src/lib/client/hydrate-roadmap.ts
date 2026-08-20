@@ -15,7 +15,7 @@ function paintRow(row: HTMLElement, status: MilestoneStatus): void {
   const label = row.querySelector('.milestone-status');
   if (label) {
     label.textContent = MILESTONE_STATUS_LABELS[status];
-    label.className = `milestone-status font-mono text-[10px] uppercase tracking-[0.14em] ${statusClass(status)}`;
+    label.className = `milestone-status font-mono text-[12px] uppercase tracking-[0.14em] ${statusClass(status)}`;
   }
 }
 

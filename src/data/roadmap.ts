@@ -41,7 +41,6 @@ export const PHASES: Phase[] = [
     number: 1,
     name: 'Fundamentos de Frontend Moderno',
     goal: 'Dominar JavaScript / TypeScript moderno y React en profundidad.',
-    outcome: 'Construir aplicaciones React completas sin depender constantemente de tutoriales.',
     skillIds: ['javascript', 'typescript', 'react', 'accessibility', 'responsive'],
   },
   {
@@ -49,7 +48,6 @@ export const PHASES: Phase[] = [
     number: 2,
     name: 'Frontend en Producción',
     goal: 'Llevar React a un contexto real de producción con Next.js.',
-    outcome: 'Construir una aplicación frontend cercana a la calidad de producción.',
     skillIds: ['nextjs', 'performance', 'seo'],
   },
   {
@@ -57,7 +55,6 @@ export const PHASES: Phase[] = [
     number: 3,
     name: 'Testing',
     goal: 'Diseñar y mantener una estrategia de testing razonable.',
-    outcome: 'Cubrir unitario, integración y E2E con confianza real en el código.',
     skillIds: ['testing-unitario', 'testing-componentes', 'testing-e2e'],
   },
   {
@@ -65,7 +62,6 @@ export const PHASES: Phase[] = [
     number: 4,
     name: 'Ecosistema Vue',
     goal: 'Ampliar oportunidades laborales dominando Vue 3 y Nuxt.',
-    outcome: 'Ser productivo en un stack Vue sin una rampa de adaptación larga.',
     skillIds: ['vue3', 'nuxt'],
   },
   {
@@ -73,7 +69,6 @@ export const PHASES: Phase[] = [
     number: 5,
     name: 'Alfabetización Backend',
     goal: 'El backend suficiente para ser un buen frontend, no para cambiar de rol.',
-    outcome: 'Diseñar y consumir tus propias APIs con criterio.',
     skillIds: ['http-rest', 'nodejs', 'databases'],
   },
   {
@@ -81,7 +76,6 @@ export const PHASES: Phase[] = [
     number: 6,
     name: 'SQL',
     goal: 'Trabajar con bases de datos relacionales con soltura real.',
-    outcome: 'Diseñar esquemas normalizados y escribir consultas eficientes.',
     skillIds: ['postgresql'],
   },
   {
@@ -89,8 +83,7 @@ export const PHASES: Phase[] = [
     number: 7,
     name: 'Frontend Profesional',
     goal: 'Consolidar criterio de ingeniería orientado al objetivo salarial.',
-    outcome: 'Funcionar como un frontend fiable dentro de un equipo de producción.',
-    skillIds: ['architecture', 'git-workflows', 'observability'],
+    skillIds: ['architecture', 'git-workflows'],
   },
 ];
 
@@ -303,33 +296,7 @@ export const SKILLS: Skill[] = [
     summary: 'Cuándo basta Context, cuándo hace falta una store y cómo evitar prop drilling.',
     resources: [{ kind: 'DOC', label: 'Zustand', url: 'https://zustand.docs.pmnd.rs/getting-started/introduction' }],
   },
-  {
-    id: 'react-rendimiento',
-    name: 'Renders y rendimiento',
-    phaseId: 'p01',
-    parentId: 'react',
-    summary: 'Detectar re-renders con React DevTools, memo, y cuándo optimizar (y cuándo no).',
-    resources: [{ kind: 'DOC', label: 'React DevTools Profiler', url: 'https://react.dev/learn/react-developer-tools' }],
-  },
 
-  // ── p01 · Fundamentos web ─────────────────────────────────────────────────
-  {
-    id: 'accessibility',
-    name: 'Accesibilidad',
-    phaseId: 'p01',
-    summary: 'HTML semántico, foco, teclado y ARIA solo cuando el HTML no llega.',
-    resources: [
-      { kind: 'DOC', label: 'ARIA Authoring Practices Guide', url: 'https://www.w3.org/WAI/ARIA/apg/' },
-      { kind: 'PRACTICA', label: 'axe DevTools', url: 'https://www.deque.com/axe/devtools/' },
-    ],
-  },
-  {
-    id: 'responsive',
-    name: 'Diseño Responsive',
-    phaseId: 'p01',
-    summary: 'Mobile-first, unidades fluidas con clamp(), grid moderno y container queries.',
-    resources: [{ kind: 'DOC', label: 'MDN · CSS layout', url: 'https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout' }],
-  },
 
   // ── p02 · Next.js ─────────────────────────────────────────────────────────
   {
@@ -386,20 +353,6 @@ export const SKILLS: Skill[] = [
     parentId: 'nextjs',
     summary: 'Sesiones con cookies httpOnly, rutas protegidas y middleware.',
     resources: [{ kind: 'DOC', label: 'Authentication', url: 'https://nextjs.org/docs/app/building-your-application/authentication' }],
-  },
-  {
-    id: 'performance',
-    name: 'Rendimiento',
-    phaseId: 'p02',
-    summary: 'Core Web Vitals, imágenes, fuentes y peso de JavaScript.',
-    resources: [{ kind: 'DOC', label: 'web.dev · Core Web Vitals', url: 'https://web.dev/articles/vitals' }],
-  },
-  {
-    id: 'seo',
-    name: 'SEO',
-    phaseId: 'p02',
-    summary: 'Metadatos, Open Graph, sitemap y datos estructurados.',
-    resources: [{ kind: 'DOC', label: 'Metadata', url: 'https://nextjs.org/docs/app/building-your-application/optimizing/metadata' }],
   },
 
   // ── p03 · Testing ─────────────────────────────────────────────────────────
@@ -476,14 +429,14 @@ export const SKILLS: Skill[] = [
   // ── p06 · SQL ─────────────────────────────────────────────────────────────
   {
     id: 'postgresql',
-    name: 'PostgreSQL',
+    name: 'SQL',
     phaseId: 'p06',
-    summary: 'SQL de verdad sobre la base de datos relacional más usada en producción.',
-    resources: [{ kind: 'DOC', label: 'PostgreSQL Tutorial', url: 'https://www.postgresql.org/docs/current/tutorial.html' }],
+    summary: 'SQL de verdad sobre bases de datos relacionales, tal como se usa en producción.',
+    resources: [{ kind: 'CURSO', label: 'AprendeSQL', url: 'https://aprendesql.dev' }],
   },
   { id: 'sql-joins', name: 'SELECT / JOIN / GROUP BY', phaseId: 'p06', parentId: 'postgresql', summary: 'Consultas sobre varias tablas, agregaciones y filtrado con HAVING.' },
   { id: 'schema-design', name: 'Diseño de esquemas', phaseId: 'p06', parentId: 'postgresql', summary: 'Claves, relaciones, normalización hasta 3FN y restricciones.' },
-  { id: 'query-optimization', name: 'Optimización de consultas', phaseId: 'p06', parentId: 'postgresql', summary: 'EXPLAIN ANALYZE, índices y cómo leer un plan de ejecución.' },
+  { id: 'query-optimization', name: 'Optimización de consultas', phaseId: 'p06', parentId: 'postgresql', summary: 'EXPLAIN, índices y cómo leer un plan de ejecución.' },
 
   // ── p07 · Frontend profesional ────────────────────────────────────────────
   {
@@ -503,13 +456,6 @@ export const SKILLS: Skill[] = [
   },
   { id: 'ci-cd', name: 'CI/CD', phaseId: 'p07', parentId: 'git-workflows', summary: 'Pipelines que ejecutan lint, tests y build en cada push.' },
   { id: 'code-review', name: 'Revisión de código', phaseId: 'p07', parentId: 'git-workflows', summary: 'Dar y recibir feedback concreto, accionable y sin ego.' },
-  {
-    id: 'observability',
-    name: 'Observabilidad',
-    phaseId: 'p07',
-    summary: 'Saber qué está pasando en producción: errores, logs y métricas de usuario real.',
-    resources: [{ kind: 'DOC', label: 'Sentry para frontend', url: 'https://docs.sentry.io/platforms/javascript/' }],
-  },
 ];
 
 export const TASKS: Task[] = [
@@ -1399,15 +1345,15 @@ export const TASKS: Task[] = [
 
   // ── p06 · SQL ─────────────────────────────────────────────────────────────
   {
-    id: 't076', number: 76, phaseId: 'p06', skillId: 'postgresql', title: 'Crear una base de datos y hacer CRUD con psql', estMinutes: 25, order: 76,
+    id: 't076', number: 76, phaseId: 'p06', skillId: 'postgresql', title: 'Crear una base de datos y hacer CRUD desde la consola', estMinutes: 25, order: 76,
     brief: 'Soltura con la consola: crear, insertar, consultar, actualizar y borrar sin ORM de por medio.',
     steps: [
-      'Conéctate con psql y crea una base de datos y una tabla.',
+      'Abre la consola del gestor y crea una base de datos y una tabla.',
       'Inserta varias filas con INSERT.',
       'Consulta con SELECT filtrando con WHERE y ordenando.',
       'Actualiza y borra filas, comprobando siempre el WHERE antes de ejecutar.',
     ],
-    doneWhen: ['Manejas psql sin buscar cada comando', 'Sabes usar los metacomandos básicos como \\dt y \\d tabla', 'Ningún UPDATE o DELETE se te ha ido sin WHERE'],
+    doneWhen: ['Manejas la consola sin buscar cada comando', 'Sabes listar tablas e inspeccionar su estructura', 'Ningún UPDATE o DELETE se te ha ido sin WHERE'],
   },
   {
     id: 't077', number: 77, phaseId: 'p06', skillId: 'sql-joins', title: 'Cinco consultas con JOIN sobre un esquema de ejemplo', estMinutes: 25, order: 77,
@@ -1521,18 +1467,6 @@ export const TASKS: Task[] = [
       'Separa lo que bloquea de lo que es solo una sugerencia.',
     ],
     doneWhen: ['Has dejado al menos tres comentarios concretos', 'Al menos uno detecta un problema o mejora real', 'Queda claro qué bloquea la PR y qué no'],
-  },
-  {
-    id: 't087', number: 87, phaseId: 'p07', skillId: 'observability', title: 'Instrumentar errores y métricas de usuario real', estMinutes: 25, order: 87,
-    brief: 'Enterarte de los fallos por tu panel de errores y no por el usuario.',
-    steps: [
-      'Integra Sentry (o similar) en el proyecto y sube los source maps.',
-      'Provoca un error en producción y compruébalo en el panel.',
-      'Envía las métricas de Web Vitals reales de los usuarios.',
-      'Define qué situación merecería una alerta.',
-    ],
-    doneWhen: ['Un error real aparece en el panel con su traza legible', 'Se recogen métricas de usuario real, no solo de laboratorio', 'Está escrito qué se considera digno de alerta'],
-    resources: [{ kind: 'DOC', label: 'Sentry para JavaScript', url: 'https://docs.sentry.io/platforms/javascript/' }],
   },
 ];
 

@@ -1,5 +1,5 @@
 const CACHE_NAME = 'buildlog-v1';
-const APP_SHELL = ['/', '/roadmap', '/progress', '/career', '/settings', '/manifest.webmanifest', '/icon.svg'];
+const APP_SHELL = ['/', '/roadmap', '/progress', '/career', '/settings', '/repaso', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

@@ -7,6 +7,6 @@ interface Props {
 const { label, value, class: className = '' } = Astro.props;
 ---
 <div class:list={['flex flex-col gap-0.5', className]}>
-  <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{label}</span>
+  <span class="font-mono text-[12px] uppercase tracking-[0.14em] text-muted">{label}</span>
   <span class="font-mono text-xs text-ink">{value}</span>
 </div>
